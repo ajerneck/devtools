@@ -74,25 +74,55 @@ remote_metadata.git_remote <- function(x, bundle = NULL, source = NULL) {
 #' @export
 remote_package_name.git_remote <- function(remote, ...) {
 
+  tmp_dir <- tempfile()
+  ## tmp_dir <- paste0(tmp_dir, "/tmp")
+  on.exit(unlink(tmp_dir))
+
+  print(tmp_dir)
+
   tmp <- tempfile()
   on.exit(unlink(tmp))
+
+  print(tmp)
+
   description_path <- paste0(collapse = "/", c(remote$subdir, "DESCRIPTION"))
+
+  print(description_path)
 
   # Try using git archive --remote to retrieve the DESCRIPTION, if the protocol
   # or server doesn't support that return NULL
-  res <- try(silent = TRUE,
-    system_check(git_path(),
-      args = c("archive", "-o", tmp, "--remote", remote$url,
-        if (is.null(remote$branch)) "HEAD" else remote$branch,
-        description_path),
-      quiet = TRUE))
+  ## res <- try(silent = TRUE,
+  ##   system_check(git_path(),
+  ##     args = c("archive", "-o", tmp, "--remote", remote$url,
+  ##       if (is.null(remote$branch)) "HEAD" else remote$branch,
+  ##       description_path),
+  ##     quiet = TRUE))
 
-  if (inherits(res, "try-error")) {
-    return(NA)
-  }
+  ## if (inherits(res, "try-error")) {
+  ##   return(NA)
+  ## }
+
+  ## clone the repository first, because many git servers do not support the archive operation.
+  clone_repo <- system_check(git_path(),
+                      args = c("clone", remote$url, tmp_dir),
+                      quiet = FALSE)
+
+
+  print(clone_repo)
+
+  res <- system_check(git_path(),
+                      args = c("archive", "-o", tmp, "--remote", tmp_dir,
+                               if (is.null(remote$branch)) "HEAD" else remote$branch,
+                               description_path),
+                      quiet = FALSE)
+
+  print(res)
 
   # git archive return a tar file, so extract it to tempdir and read the DCF
   utils::untar(tmp, files = description_path, exdir = tempdir())
+
+  ##
+  ## unlink(tmp_dir)
 
   read_dcf(file.path(tempdir(), description_path))$Package
 }
