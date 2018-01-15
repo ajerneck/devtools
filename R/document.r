@@ -24,15 +24,19 @@ document <- function(pkg = ".", clean = NULL, roclets = NULL, reload = TRUE) {
   pkg <- as.package(pkg)
   message("Updating ", pkg$package, " documentation")
 
-  if (rstudioapi::isAvailable()) {
+  if (rstudioapi::hasFun("documentSaveAll")) {
     rstudioapi::documentSaveAll()
   }
 
-  load_all(pkg$path)
+
+  # Refresh the pkg structure with any updates to the Collate entry
+  # in the DESCRIPTION file
+  roxygen2::update_collate(pkg$path)
+
+  load_all(pkg$path, helpers = FALSE)
 
   if (packageVersion("roxygen2") > "4.1.1") {
     roclets <- roclets %||% roxygen2::load_options(pkg$path)$roclets
-    # collate updated by load_all()
     roclets <- setdiff(roclets, "collate")
   }
 

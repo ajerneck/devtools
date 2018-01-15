@@ -44,6 +44,9 @@
 #'   rerun \code{\link{document}} prior to checking. Use \code{TRUE}
 #'   and \code{FALSE} to override this default.
 #' @param build_args Additional arguments passed to \code{R CMD build}
+#' @param check_dir This argument is ignored, and exists only for backwards
+#'   compatibility. \code{args = "--output=/foo/bar"} can be used to change the
+#'   check directory.
 #' @param ... Additional arguments passed on to \code{\link[pkgbuild]{build}()}.
 #' @seealso \code{\link{release}} if you want to send the checked package to
 #'   CRAN.
@@ -59,10 +62,12 @@ check <- function(pkg = ".",
                   run_dont_test = FALSE,
                   args = NULL,
                   env_vars = NULL,
-                  quiet = FALSE) {
+                  quiet = FALSE,
+                  check_dir) {
   pkg <- as.package(pkg)
+  withr::local_options(list(warn = 1))
 
-  if (rstudioapi::isAvailable()) {
+  if (rstudioapi::hasFun("documentSaveAll")) {
     rstudioapi::documentSaveAll()
   }
 
@@ -75,8 +80,13 @@ check <- function(pkg = ".",
   }
 
   if (!quiet) {
+    cat_rule(
+      left = "Building",
+      right = pkg$package,
+      background_col = "blue",
+      col = "white"
+    )
     show_env_vars(pkgbuild::compiler_flags(FALSE))
-    rule("Building ", pkg$package)
   }
 
   withr::with_envvar(pkgbuild::compiler_flags(FALSE), action = "prefix", {
@@ -153,8 +163,13 @@ check_built <- function(path = NULL, cran = TRUE,
 
   env_vars <- check_env_vars(cran, check_version, force_suggests, env_vars)
   if (!quiet) {
+    cat_rule(
+      left = "Checking",
+      right = pkgname,
+      background_col = "blue",
+      col = "white"
+    )
     show_env_vars(env_vars)
-    rule("Checking ", pkgname)
   }
 
   withr::with_envvar(env_vars, action = "prefix", {
@@ -163,7 +178,7 @@ check_built <- function(path = NULL, cran = TRUE,
 }
 
 check_env_vars <- function(cran = FALSE, check_version = FALSE,
-                           force_suggests = TRUE, env_vars) {
+                           force_suggests = TRUE, env_vars = character()) {
   c(
     aspell_env_var(),
     "_R_CHECK_CRAN_INCOMING_" = as.character(check_version),
@@ -180,6 +195,7 @@ aspell_env_var <- function() {
 }
 
 show_env_vars <- function(env_vars) {
-  rule("Setting env vars")
-  message(paste0(format(names(env_vars)), ": ", unname(env_vars), collapse = "\n"))
+  cat_line("Setting env vars:", col = "darkgrey")
+  cat_bullet(paste0(format(names(env_vars)), ": ", unname(env_vars)), col = "darkgrey")
+  cat_rule(col = "darkgrey")
 }

@@ -1,9 +1,21 @@
 # devtools 1.13.3.9000
 
+* Now use cli package to draw rules - they are more aesthetically pleasing
+  and the correct width in the RStudio build pane (#1627).
+
+* `release()` has been tweaked to reflect modern submission workflow and to 
+  ask questions rather than running code for you (#1632). 
+
+* New `test_coverage()` provides helper to compute test coverage using covr
+  (#1628).
+
+* `build_win()` has been renamed to `check_win_release()`, `check_win_devel()`,
+  `check_win_oldrelease()` (#1598).
+
 * `document()`, `load_all()`, `check()`, `build()` and `test()` now
   automatically save open files when they are run inside the RStudio IDE. (#1576)
 
-* New `rhub_check()` function to check packages using <https://builder.r-hub.io/>.
+* New `check_rhub()` function to check packages using <https://builder.r-hub.io/>.
 
 * `run_examples` was mistakenly passing `show` to
   `pkgload::run_example`, causing it to fail (@amcdavid, #1449)
@@ -39,6 +51,15 @@
   in the gist (#1266).
 * Infrastructure functions (`use_*`) now use the implementations in **usethis**.
 * Use rcmdcheck to run and parse R CMD check output (#1153).
+
+* The `spell_check()` code has been moved into the new **spelling** package and
+  has thereby gained support for vignettes and package wordlists. The devtools 
+  function now wraps `spelling::spell_check_package()`.
+  
+* In order to not run test helpers in `document()`, the `helpers` argument of
+  `load_all()` is set to `FALSE` (@nbenn, #1669)
+
+* The `my_unzip()` function is now able to use the `utils::unzip` fallback when R is compiled from source with no *unzip* package present (@theGreatWhiteShark, #1678)
 
 # devtools 1.13.2
 Workaround a regression in Rcpp::compileAttributes.

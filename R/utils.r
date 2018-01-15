@@ -16,16 +16,6 @@ compact <- function(x) {
   get(f, envir = asNamespace(p))
 }
 
-rule <- function(..., pad = "-") {
-  if (nargs() == 0) {
-    title <- ""
-  } else {
-    title <- paste0(..., " ")
-  }
-  width <- max(getOption("width") - nchar(title) - 1, 0)
-  message(title, paste(rep(pad, width, collapse = "")))
-}
-
 # check whether the specified file ends with newline
 ends_with_newline <- function(path) {
   conn <- file(path, open = "rb", raw = TRUE)
@@ -183,4 +173,11 @@ trim_ws <- function (x, which = c("both", "left", "right")) {
     if (which == "right")
         return(mysub("[ \t\r\n]+$", x))
     mysub("[ \t\r\n]+$", mysub("^[ \t\r\n]+", x))
+}
+
+# throws a warning if the argument is not the current directory.
+warn_unless_current_dir <- function(pkg) {
+  if (pkg != ".") {
+    warning("`pkg` is not `.`, which is now unsupported.\n  Please use `usethis::proj_set()` to set the project directory.", immediate. = TRUE)
+  }
 }

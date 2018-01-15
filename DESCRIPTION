@@ -8,58 +8,59 @@ Authors@R: c(
     person("R Core team", role = "ctb",
       comment = "Some namespace and vignette code extracted from base R")
     )
-Encoding: UTF-8
 Description: Collection of package development tools.
+License: GPL (>= 2)
 URL: https://github.com/hadley/devtools
 BugReports: https://github.com/hadley/devtools/issues
-Depends:
-    R (>= 3.0.2),
-    usethis
-Imports:
+Depends: 
+    R (>= 3.0.2)
+Imports: 
     callr,
-    httr (>= 0.4),
-    utils,
-    tools,
-    methods,
-    memoise (>= 1.0.0),
-    whisker,
+    cli,
     digest,
-    rstudioapi (>= 0.6.0.9000),
-    jsonlite,
-    stats,
     git2r (>= 0.12.1),
-    withr,
+    httr (>= 0.4),
+    jsonlite,
+    memoise (>= 1.0.0),
+    methods,
     pkgbuild,
     pkgload,
+    rcmdcheck,
+    rstudioapi (>= 0.6.0.9000),
     sessioninfo,
-    rcmdcheck
-Suggests:
-    curl (>= 0.9),
-    crayon,
-    testthat (>= 1.0.2),
+    stats,
+    tools,
+    usethis,
+    utils,
+    whisker,
+    withr
+Suggests: 
     BiocInstaller,
-    Rcpp (>= 0.10.0),
-    MASS,
-    rmarkdown,
-    knitr,
-    hunspell (>= 2.0),
-    lintr (>= 0.2.1),
     bitops,
-    roxygen2 (>= 5.0.0),
-    evaluate,
-    rversions,
     covr,
+    crayon,
+    curl (>= 0.9),
+    evaluate,
     gmailr (> 0.7.0),
-    rhub
-Remotes:
-  hadley/testthat,
-  r-pkgs/pkgload,
-  r-pkgs/pkgbuild@HEAD,
-  mangothecat/callr,
-  r-lib/sessioninfo,
-  r-lib/usethis,
-  r-hub/rhub,
-  rstudio/rstudioapi
-License: GPL (>= 2)
+    knitr,
+    lintr (>= 0.2.1),
+    MASS,
+    Rcpp (>= 0.10.0),
+    rhub,
+    rmarkdown,
+    roxygen2 (>= 5.0.0),
+    rversions,
+    spelling,
+    testthat (>= 1.0.2)
 VignetteBuilder: knitr
+Encoding: UTF-8
+Remotes: hadley/testthat,
+    r-hub/rhub,
+    r-lib/callr,
+    r-lib/cli,
+    r-lib/pkgbuild,
+    r-lib/pkgload,
+    r-lib/sessioninfo,
+    r-lib/usethis,
+    rstudio/rstudioapi
 RoxygenNote: 6.0.1

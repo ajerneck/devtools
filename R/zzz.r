@@ -1,6 +1,7 @@
 #' @importFrom utils available.packages contrib.url install.packages
 #'   installed.packages menu modifyList packageDescription
 #'   packageVersion remove.packages
+#' @importFrom cli cat_rule cat_line cat_bullet
 NULL
 
 #' Package development tools for R.
@@ -64,10 +65,8 @@ devtools_default_options <- list(
   invisible()
 }
 
-# Workaround for silencing object masking messages
-# TODO: This should be removed when use_test and friends are removed from
-# devtools.
 .onAttach <- function(libname, pkgname) {
   env <- as.environment(paste0("package:", pkgname))
   env[[".conflicts.OK"]] <- TRUE
+  suppressPackageStartupMessages((get("library", baseenv()))("usethis"))
 }
